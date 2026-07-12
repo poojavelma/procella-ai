@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Notes — Procella AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B1C38;
+  --navy-mid: #152D55;
+  --teal: #00C9B1;
+  --teal-dim: #00a896;
+  --teal-glow: rgba(0,201,177,0.12);
+  --white: #FFFFFF;
+  --slate: #8A9BB5;
+  --slate-light: #C5D0E0;
+  --danger: #FF6B6B;
+  --warn: #FFB347;
+  --border: rgba(255,255,255,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  height: 100vh;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+
+/* ===================== NORMAL MODE ===================== */
+#normalMode {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 340px 1fr;
+  grid-template-areas: "header header" "sidebar main";
+  height: 100vh;
+}
+
+.header {
+  grid-area: header;
+  background: #091526;
+  padding: 0.75rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; }
+.logo span { color: var(--teal); }
+.logo small { font-size: 0.7rem; font-weight: 400; color: var(--slate); margin-left: 0.5rem; }
+.header-right { display: flex; align-items: center; gap: 0.75rem; }
+.live-badge {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.8rem; border-radius: 100px;
+  font-size: 0.72rem; font-weight: 600;
+}
+.live-badge.off { background: rgba(255,255,255,0.06); color: var(--slate); border: 1px solid var(--border); }
+.live-badge.on { background: rgba(255,80,80,0.15); color: var(--danger); border: 1px solid rgba(255,80,80,0.3); }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.live-badge.on .live-dot { animation: blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.client-pill {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  border-radius: 100px; padding: 0.3rem 0.9rem;
+  font-size: 0.8rem; color: var(--slate-light); cursor: pointer; transition: all 0.15s;
+}
+.client-pill:hover { border-color: var(--teal); color: var(--teal); }
+.icon-btn {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.45rem 0.75rem;
+  font-size: 0.8rem; color: var(--slate-light); cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem;
+}
+.icon-btn:hover { border-color: var(--slate); color: var(--white); }
+.icon-btn.discreet-trigger { border-color: rgba(255,179,71,0.3); color: var(--warn); background: rgba(255,179,71,0.06); }
+.icon-btn.discreet-trigger:hover { background: rgba(255,179,71,0.12); }
+.start-btn {
+  background: var(--teal); color: var(--navy);
+  border: none; border-radius: 8px; padding: 0.5rem 1.25rem;
+  font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: background 0.15s;
+}
+.start-btn:hover { background: var(--teal-dim); }
+.start-btn.stop { background: rgba(255,107,107,0.15); color: var(--danger); border: 1px solid rgba(255,107,107,0.3); }
+
+.sidebar {
+  grid-area: sidebar;
+  background: #091526;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.sidebar-title {
+  padding: 0.875rem 1.25rem;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--slate);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.transcript-scroll {
+  flex: 1; overflow-y: auto; padding: 1rem 1.25rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+}
+.transcript-scroll::-webkit-scrollbar { width: 4px; }
+.transcript-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+.transcript-line {
+  font-size: 0.82rem; line-height: 1.6; color: var(--slate-light);
+  padding: 0.5rem 0.75rem; border-radius: 8px;
+  border-left: 3px solid transparent; animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.transcript-line.interim { color: var(--slate); font-style: italic; }
+.transcript-line.final { border-left-color: rgba(255,255,255,0.08); }
+.transcript-line.flagged { border-left-color: var(--warn); background: rgba(255,179,71,0.06); }
+.t-empty { color: var(--slate); font-size: 0.82rem; text-align: center; margin-top: 2rem; line-height: 1.7; }
+
+.main { grid-area: main; display: flex; flex-direction: column; overflow: hidden; }
+.main-top {
+  padding: 0.875rem 1.5rem;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--slate);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.suggestions-scroll {
+  flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.suggestions-scroll::-webkit-scrollbar { width: 4px; }
+.suggestions-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.suggestion-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px; padding: 1.25rem 1.5rem;
+  animation: slideIn 0.35s ease; position: relative; overflow: hidden;
+}
+@keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.suggestion-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:3px; background:rgba(255,255,255,0.1); border-radius:14px 0 0 14px;
+}
+.suggestion-card.urgent::before { background: var(--teal); }
+.suggestion-card.urgent { border-color: rgba(0,201,177,0.25); background: rgba(0,201,177,0.04); }
+.suggestion-card.objection::before { background: var(--warn); }
+.card-trigger {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; margin-bottom: 0.6rem;
+}
+.card-trigger.type-question { color: var(--teal); }
+.card-trigger.type-objection { color: var(--warn); }
+.card-trigger.type-info { color: var(--slate); }
+.trigger-quote {
+  font-size: 0.8rem; color: var(--slate-light); font-style: italic;
+  margin-bottom: 0.75rem; line-height: 1.5;
+  padding: 0.4rem 0.75rem;
+  background: rgba(255,255,255,0.04); border-radius: 6px;
+  border-left: 2px solid rgba(255,255,255,0.1);
+}
+.card-response { font-size: 0.9rem; line-height: 1.7; color: var(--white); }
+.card-response strong { color: var(--teal); font-weight: 600; }
+.card-time { font-size: 0.7rem; color: var(--slate); margin-top: 0.75rem; }
+.card-dismiss {
+  position: absolute; top: 0.75rem; right: 0.875rem;
+  font-size: 0.7rem; color: var(--slate); cursor: pointer;
+  background: rgba(255,255,255,0.06); border: none;
+  padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'Inter', sans-serif;
+}
+.card-dismiss:hover { color: var(--white); }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; gap: 1rem; color: var(--slate); text-align: center; padding: 2rem;
+}
+.empty-icon { font-size: 3rem; opacity: 0.4; }
+.empty-title { font-size: 1rem; font-weight: 600; color: var(--slate-light); }
+.empty-sub { font-size: 0.85rem; line-height: 1.7; max-width: 380px; }
+
+.processing {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0,201,177,0.06); border: 1px solid rgba(0,201,177,0.15);
+  border-radius: 10px; font-size: 0.82rem; color: var(--teal);
+}
+.proc-dots { display: flex; gap: 3px; }
+.proc-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); animation: bounce 1.2s infinite; }
+.proc-dots span:nth-child(2) { animation-delay: 0.2s; }
+.proc-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+.status-bar {
+  padding: 0.5rem 1.5rem; background: #091526;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem; color: var(--slate);
+  display: flex; align-items: center; gap: 0.6rem; grid-column: 1/-1;
+}
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--slate); flex-shrink: 0; }
+.status-dot.active { background: var(--teal); animation: blink 1.4s infinite; }
+
+/* ===================== DISCREET MODE ===================== */
+#discreetMode {
+  display: none;
+  height: 100vh;
+  background: #F8F9FA;
+  color: #1A1A2E;
+  flex-direction: column;
+}
+body.discreet { background: #F8F9FA; }
+
+.d-header {
+  padding: 1rem 1.5rem 0.75rem;
+  border-bottom: 1px solid #E5E7EB;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.d-title { font-size: 1rem; font-weight: 600; color: #1A1A2E; }
+.d-subtitle { font-size: 0.78rem; color: #6B7280; margin-top: 1px; }
+.d-exit {
+  font-size: 0.75rem; color: #9CA3AF; cursor: pointer;
+  background: #F3F4F6; border: 1px solid #E5E7EB;
+  padding: 0.3rem 0.75rem; border-radius: 6px;
+  font-family: 'Inter', sans-serif; transition: all 0.15s;
+}
+.d-exit:hover { background: #E5E7EB; }
+
+.d-body { display: flex; flex: 1; overflow: hidden; }
+
+/* LEFT — fake notes area */
+.d-notes {
+  flex: 1; padding: 1.25rem 1.5rem; overflow-y: auto;
+  border-right: 1px solid #E5E7EB;
+}
+.d-notes-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #9CA3AF; margin-bottom: 1rem; }
+.d-note-line {
+  font-size: 0.88rem; line-height: 1.8; color: #374151;
+  padding: 0.2rem 0; border-bottom: 1px solid #F3F4F6;
+  animation: fadeIn 0.3s ease;
+}
+.d-note-placeholder { font-size: 0.85rem; color: #D1D5DB; font-style: italic; margin-top: 1rem; }
+
+/* RIGHT — suggestion panel, looks like agenda/checklist */
+.d-suggestions {
+  width: 320px; padding: 1.25rem; overflow-y: auto;
+  background: #FAFAFA;
+}
+.d-suggestions-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #9CA3AF; margin-bottom: 1rem; }
+
+.d-card {
+  background: #FFFFFF; border: 1px solid #E5E7EB;
+  border-radius: 10px; padding: 1rem 1.1rem;
+  margin-bottom: 0.75rem; position: relative;
+  border-left: 3px solid #E5E7EB;
+  animation: slideIn 0.35s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.d-card.urgent { border-left-color: #059669; }
+.d-card.objection { border-left-color: #D97706; }
+.d-card-label {
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #9CA3AF; margin-bottom: 0.5rem;
+}
+.d-card.urgent .d-card-label { color: #059669; }
+.d-card.objection .d-card-label { color: #D97706; }
+.d-card-trigger {
+  font-size: 0.78rem; color: #6B7280; font-style: italic;
+  margin-bottom: 0.6rem; line-height: 1.5;
+}
+.d-card-response {
+  font-size: 0.88rem; line-height: 1.65; color: #1F2937; font-weight: 500;
+}
+.d-card-dismiss {
+  position: absolute; top: 0.6rem; right: 0.75rem;
+  font-size: 0.65rem; color: #D1D5DB; cursor: pointer;
+  background: none; border: none; font-family: 'Inter', sans-serif;
+}
+.d-card-dismiss:hover { color: #9CA3AF; }
+.d-empty { font-size: 0.82rem; color: #D1D5DB; font-style: italic; text-align: center; margin-top: 2rem; line-height: 1.7; }
+
+/* NEW SUGGESTION FLASH — subtle pulse on the right panel title */
+.d-suggestions-title.flash { animation: titleFlash 0.6s ease; }
+@keyframes titleFlash { 0%,100%{color:#9CA3AF} 50%{color:#059669} }
+
+/* SETUP MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.modal {
+  background: #1A2F52; border-radius: 16px;
+  padding: 2rem; width: 480px; max-width: 95vw;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.modal h2 { font-family: 'Sora', sans-serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--white); }
+.modal p { font-size: 0.85rem; color: var(--slate-light); margin-bottom: 1.5rem; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.75rem; }
+.form-group label { font-size: 0.75rem; font-weight: 600; color: var(--slate-light); }
+.form-group input, .form-group select {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 0.65rem 0.875rem;
+  font-size: 0.88rem; font-family: 'Inter', sans-serif;
+  color: var(--white); outline: none; transition: border 0.15s;
+}
+.form-group input:focus, .form-group select:focus { border-color: rgba(0,201,177,0.4); }
+.form-group select option { background: #1A2F52; }
+.modal-btn {
+  width: 100%; background: var(--teal); color: var(--navy);
+  border: none; border-radius: 10px; padding: 0.875rem;
+  font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; margin-top: 0.5rem; transition: background 0.15s;
+}
+.modal-btn:hover { background: var(--teal-dim); }
+
+/* KEYBOARD SHORTCUT HINT */
+.shortcut-hint {
+  position: fixed; bottom: 1rem; right: 1rem;
+  background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.5);
+  font-size: 0.7rem; padding: 0.35rem 0.75rem; border-radius: 6px;
+  pointer-events: none;
+}
+body.discreet .shortcut-hint { background: rgba(0,0,0,0.08); color: #9CA3AF; }
+</style>
+</head>
+<body>
+
+<!-- SETUP MODAL -->
+<div class="modal-overlay" id="setupModal">
+  <div class="modal">
+    <h2>Set up your meeting assistant</h2>
+    <p>Enter the client's details. Then click Start — the assistant will listen passively and suggest responses on screen whenever the client says something that needs addressing.</p>
+    <div class="form-row">
+      <div class="form-group"><label>Client name</label><input id="clientName" placeholder="e.g. Sarah Johnson" /></div>
+      <div class="form-group"><label>Practice name</label><input id="clientBiz" placeholder="e.g. Smith CPA" /></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Industry</label>
+        <select id="clientIndustry">
+          <option value="">Select...</option>
+          <option value="accounting">Accounting / Bookkeeping</option>
+          <option value="legal">Legal Practice</option>
+          <option value="medical">Medical / Dental</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Audit score (if taken)</label><input id="clientScore" placeholder="e.g. 42" type="number" min="0" max="100" /></div>
+    </div>
+    <div class="form-group"><label>Pre-call notes</label><input id="preNotes" placeholder="e.g. Very concerned about data security, 6-person firm" /></div>
+    <button class="modal-btn" onclick="startListening()">Start meeting assistant →</button>
+  </div>
+</div>
+
+<!-- ===== NORMAL MODE ===== -->
+<div id="normalMode">
+  <div class="header">
+    <div class="logo">Procella <span>AI</span><small>Meeting Assistant</small></div>
+    <div class="header-right">
+      <div class="live-badge off" id="liveBadge"><div class="live-dot"></div><span id="liveText">Not listening</span></div>
+      <div class="client-pill" id="clientPill" onclick="document.getElementById('setupModal').style.display='flex'">No client set</div>
+      <button class="icon-btn discreet-trigger" onclick="enterDiscreet()" title="Switch to discreet mode (Ctrl+D)">🎭 Discreet mode</button>
+      <button class="start-btn" id="startBtn" onclick="document.getElementById('setupModal').style.display='flex'">Set up meeting</button>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-title">
+      <span>Live transcript</span>
+      <span id="wordCount" style="font-weight:400">0 words</span>
+    </div>
+    <div class="transcript-scroll" id="transcriptScroll">
+      <div class="t-empty" id="transcriptEmpty">Transcript will appear here once you start the assistant.</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="main-top">
+      <span>AI suggestions</span>
+      <span id="suggestionCount" style="font-weight:400;color:var(--slate)">Waiting...</span>
+    </div>
+    <div class="suggestions-scroll" id="suggestionsScroll">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">👂</div>
+        <div class="empty-title">Ready to listen</div>
+        <div class="empty-sub">Set up the meeting above. I'll listen passively and suggest responses whenever the client asks a question or raises a concern — you don't need to do anything.</div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Ready — set up a meeting to begin</span>
+      <span style="margin-left:auto;opacity:0.5">Press Ctrl+D to toggle discreet mode</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DISCREET MODE ===== -->
+<div id="discreetMode">
+  <div class="d-header">
+    <div>
+      <div class="d-title">Meeting Notes</div>
+      <div class="d-subtitle" id="dClientName">No meeting in progress</div>
+    </div>
+    <button class="d-exit" onclick="exitDiscreet()">← Back to assistant</button>
+  </div>
+  <div class="d-body">
+    <div class="d-notes">
+      <div class="d-notes-title">Notes</div>
+      <div id="dNotesList">
+        <div class="d-note-placeholder">Notes will appear as the conversation progresses...</div>
+      </div>
+    </div>
+    <div class="d-suggestions">
+      <div class="d-suggestions-title" id="dSuggestionsTitle">Talking points</div>
+      <div id="dCardsList">
+        <div class="d-empty">Suggestions will appear here during the meeting.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="shortcut-hint">Ctrl+D — toggle discreet mode</div>
+
+<script>
+const SYSTEM_PROMPT = `You are an AI assistant helping Pooja during a live meeting or call for Procella AI — a company that implements AI workflows for accounting, legal, and medical practices.
+
+You receive live conversation transcripts. Detect when the client says something Pooja needs help responding to, and provide the perfect response.
+
+RETURN ONLY VALID JSON — no other text:
+
+If response needed:
+{"shouldRespond":true,"type":"question"|"objection"|"info","trigger":"what client just said (max 12 words)","response":"What Pooja should say — natural, confident, max 3 sentences.","urgent":true|false}
+
+If no response needed:
+{"shouldRespond":false}
+
+Be selective. Only flag genuine questions, objections, or concerns. Ignore small talk and moments where Pooja is speaking well.
+
+About Procella AI:
+- Implements AI workflows for accounting, legal, medical/dental practices
+- 30-day guarantee: measurable results or client pays nothing
+- We handle 100% of technical implementation — zero client effort needed
+- Integrates with existing tools: QuickBooks, Clio, Dentrix, Google Workspace, M365
+- Pricing: $2,000–$5,000 fixed project or $800–$1,500/month retainer
+- Timeline: 30 days from kickoff to live results
+- Data security: enterprise-grade, HIPAA compliant, attorney-client privilege aware
+- Small number of clients at a time — quality guaranteed`;
+
+let clientContext = {};
+let recognition = null;
+let isActive = false;
+let isDiscreet = false;
+let fullTranscript = [];
+let pendingText = '';
+let analysisTimer = null;
+let wordCount = 0;
+let suggestionCount = 0;
+let isAnalyzing = false;
+let noteCount = 0;
+
+function startListening() {
+  const name = document.getElementById('clientName').value.trim();
+  if (!name) { alert('Please enter the client name'); return; }
+  clientContext = {
+    name, biz: document.getElementById('clientBiz').value.trim(),
+    industry: document.getElementById('clientIndustry').value,
+    score: document.getElementById('clientScore').value.trim(),
+    notes: document.getElementById('preNotes').value.trim()
+  };
+  document.getElementById('setupModal').style.display = 'none';
+  document.getElementById('clientPill').textContent = name + (clientContext.biz ? ` · ${clientContext.biz}` : '');
+  document.getElementById('dClientName').textContent = name + (clientContext.biz ? ` — ${clientContext.biz}` : '');
+  document.getElementById('startBtn').textContent = 'Stop';
+  document.getElementById('startBtn').className = 'start-btn stop';
+  document.getElementById('startBtn').onclick = stopListening;
+  document.getElementById('transcriptEmpty').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+  setStatus('active', 'Listening to your meeting...');
+  setBadge(true);
+  setupRecognition();
+}
+
+function stopListening() {
+  isActive = false;
+  if (recognition) { try { recognition.stop(); } catch(e) {} }
+  clearTimeout(analysisTimer);
+  document.getElementById('startBtn').textContent = 'Set up meeting';
+  document.getElementById('startBtn').className = 'start-btn';
+  document.getElementById('startBtn').onclick = () => document.getElementById('setupModal').style.display = 'flex';
+  setStatus('', 'Meeting ended');
+  setBadge(false);
+}
+
+function enterDiscreet() {
+  isDiscreet = true;
+  document.getElementById('normalMode').style.display = 'none';
+  document.getElementById('discreetMode').style.display = 'flex';
+  document.body.classList.add('discreet');
+}
+
+function exitDiscreet() {
+  isDiscreet = false;
+  document.getElementById('normalMode').style.display = 'grid';
+  document.getElementById('discreetMode').style.display = 'none';
+  document.body.classList.remove('discreet');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'd') { e.preventDefault(); isDiscreet ? exitDiscreet() : enterDiscreet(); }
+});
+
+function setupRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { setStatus('', 'Use Google Chrome for speech recognition'); return; }
+  isActive = true;
+  startRecognition();
+}
+
+function startRecognition() {
+  if (!isActive) return;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+  let interimEl = null;
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) {
+        addTranscriptLine(t.trim(), 'final');
+        addDiscreetNote(t.trim());
+        fullTranscript.push(t.trim());
+        wordCount += t.trim().split(' ').length;
+        document.getElementById('wordCount').textContent = wordCount + ' words';
+        pendingText += ' ' + t.trim();
+        if (interimEl) { interimEl.remove(); interimEl = null; }
+        scheduleAnalysis();
+      } else { interim = t; }
+    }
+    if (interim) {
+      if (!interimEl) {
+        interimEl = document.createElement('div');
+        interimEl.className = 'transcript-line interim';
+        document.getElementById('transcriptScroll').appendChild(interimEl);
+      }
+      interimEl.textContent = interim;
+      document.getElementById('transcriptScroll').scrollTop = 9999;
+    }
+  };
+
+  recognition.onerror = (e) => {
+    if (e.error === 'not-allowed') { setStatus('', 'Microphone access denied — allow mic in browser and refresh'); stopListening(); }
+  };
+  recognition.onend = () => { if (isActive) setTimeout(() => startRecognition(), 300); };
+  try { recognition.start(); } catch(e) { setTimeout(() => startRecognition(), 500); }
+}
+
+function scheduleAnalysis() {
+  clearTimeout(analysisTimer);
+  if (pendingText.trim().split(' ').length < 6) return;
+  analysisTimer = setTimeout(() => analyzeTranscript(), 2500);
+}
+
+async function analyzeTranscript() {
+  if (isAnalyzing || !pendingText.trim()) return;
+  isAnalyzing = true;
+  const textToAnalyze = pendingText.trim();
+  pendingText = '';
+  setStatus('active', 'Analyzing...');
+  showProcessing();
+
+  const recent = fullTranscript.slice(-20).join(' ');
+  const ctx = `Client: ${clientContext.name}${clientContext.biz?` from ${clientContext.biz}`:''}${clientContext.industry?`, ${clientContext.industry} practice`:''}${clientContext.score?`, audit score ${clientContext.score}/100`:''}${clientContext.notes?`. Notes: ${clientContext.notes}`:''}.
+Recent conversation: "${recent}"
+Latest: "${textToAnalyze}"`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: ctx }]
+      })
+    });
+    const data = await res.json();
+    removeProcessing();
+    setStatus('active', 'Listening to your meeting...');
+    const raw = (data.content?.[0]?.text || '{"shouldRespond":false}').replace(/```json|```/g,'').trim();
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed.shouldRespond && parsed.response) {
+        addSuggestion(parsed.type, parsed.trigger, parsed.response, parsed.urgent);
+        addDiscreetCard(parsed.type, parsed.trigger, parsed.response, parsed.urgent);
+        highlightLastTranscript();
+      }
+    } catch(e) {}
+  } catch(err) {
+    removeProcessing();
+    setStatus('active', 'Listening to your meeting...');
+  }
+  isAnalyzing = false;
+}
+
+function addTranscriptLine(text, cls) {
+  if (!text) return;
+  const s = document.getElementById('transcriptScroll');
+  const div = document.createElement('div');
+  div.className = `transcript-line ${cls}`;
+  div.textContent = text;
+  s.appendChild(div);
+  s.scrollTop = s.scrollHeight;
+}
+
+function addDiscreetNote(text) {
+  if (!text || text.length < 10) return;
+  const list = document.getElementById('dNotesList');
+  const placeholder = list.querySelector('.d-note-placeholder');
+  if (placeholder) placeholder.remove();
+  noteCount++;
+  if (noteCount > 30) { const old = list.querySelector('.d-note-line'); if (old) old.remove(); }
+  const div = document.createElement('div');
+  div.className = 'd-note-line';
+  div.textContent = text.length > 80 ? text.substring(0, 80) + '...' : text;
+  list.appendChild(div);
+  list.parentElement.scrollTop = 9999;
+}
+
+function addSuggestion(type, trigger, response, urgent) {
+  suggestionCount++;
+  document.getElementById('suggestionCount').textContent = `${suggestionCount} suggestion${suggestionCount !== 1 ? 's' : ''}`;
+  const scroll = document.getElementById('suggestionsScroll');
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const typeLabel = type === 'question' ? '❓ Client question' : type === 'objection' ? '⚠️ Objection' : '💡 Suggestion';
+  const typeClass = type === 'question' ? 'type-question' : type === 'objection' ? 'type-objection' : 'type-info';
+  const cardClass = 'suggestion-card' + (urgent ? ' urgent' : type === 'objection' ? ' objection' : '');
+  const id = `card-${suggestionCount}`;
+  const card = document.createElement('div');
+  card.className = cardClass; card.id = id;
+  card.innerHTML = `
+    <button class="card-dismiss" onclick="document.getElementById('${id}').remove()">dismiss</button>
+    <div class="card-trigger ${typeClass}">${typeLabel}</div>
+    ${trigger ? `<div class="trigger-quote">"${trigger}"</div>` : ''}
+    <div class="card-response">${response.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+    <div class="card-time">${now}</div>`;
+  scroll.appendChild(card);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function addDiscreetCard(type, trigger, response, urgent) {
+  const list = document.getElementById('dCardsList');
+  const empty = list.querySelector('.d-empty');
+  if (empty) empty.remove();
+  const id = `dcard-${suggestionCount}`;
+  const labelText = type === 'question' ? 'Client question' : type === 'objection' ? 'Concern raised' : 'Suggestion';
+  const cardClass = 'd-card' + (urgent ? ' urgent' : type === 'objection' ? ' objection' : '');
+  const card = document.createElement('div');
+  card.className = cardClass; card.id = id;
+  card.innerHTML = `
+    <button class="d-card-dismiss" onclick="document.getElementById('${id}').remove()">✕</button>
+    <div class="d-card-label">${labelText}</div>
+    ${trigger ? `<div class="d-card-trigger">"${trigger}"</div>` : ''}
+    <div class="d-card-response">${response.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  list.insertBefore(card, list.firstChild);
+  const title = document.getElementById('dSuggestionsTitle');
+  title.classList.add('flash');
+  setTimeout(() => title.classList.remove('flash'), 700);
+}
+
+function highlightLastTranscript() {
+  const lines = document.querySelectorAll('.transcript-line.final');
+  if (lines.length) lines[lines.length-1].classList.add('flagged');
+}
+
+function showProcessing() {
+  const scroll = document.getElementById('suggestionsScroll');
+  const div = document.createElement('div');
+  div.id = 'processing'; div.className = 'processing';
+  div.innerHTML = `<div class="proc-dots"><span></span><span></span><span></span></div> Analyzing conversation...`;
+  scroll.appendChild(div); scroll.scrollTop = scroll.scrollHeight;
+}
+function removeProcessing() { const p = document.getElementById('processing'); if (p) p.remove(); }
+function setStatus(type, text) {
+  document.getElementById('statusDot').className = 'status-dot' + (type === 'active' ? ' active' : '');
+  document.getElementById('statusText').textContent = text;
+}
+function setBadge(on) {
+  const b = document.getElementById('liveBadge');
+  b.className = 'live-badge ' + (on ? 'on' : 'off');
+  document.getElementById('liveText').textContent = on ? 'Listening' : 'Not listening';
+}
+</script>
+</body>
+</html>
