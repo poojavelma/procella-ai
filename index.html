@@ -394,6 +394,8 @@ footer p { font-size: 0.8rem; color: var(--slate); margin-top: 1.5rem; }
   .hero { padding: 5rem 1.25rem 4rem; }
 }
 </style>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript"></script>
 </head>
 <body>
 
@@ -404,7 +406,7 @@ footer p { font-size: 0.8rem; color: var(--slate); margin-top: 1.5rem; }
     <a href="#how-it-works">How it works</a>
     <a href="#industries">Industries</a>
     <a href="#audit">Free audit</a>
-    <a href="#audit" class="nav-cta">Take the audit →</a>
+    <a href="#audit" class="nav-cta" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/velmapooja/30min'});return false;">Book a free call →</a>
   </div>
 </nav>
 
@@ -692,7 +694,7 @@ footer p { font-size: 0.8rem; color: var(--slate); margin-top: 1.5rem; }
           <div class="cta-card">
             <h3>Ready to fix this in 30 days?</h3>
             <p>Book a free 30-minute strategy call. We'll walk through your results and show you exactly what we'd implement first — no obligation, no sales pressure.</p>
-            <button class="btn-cta" onclick="window.open('https://calendly.com', '_blank')">Book your free strategy call →</button>
+            <button class="btn-cta" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/velmapooja/30min'});return false;">Book your free strategy call →</button>
             <div class="cta-note">Spots are limited — we work with a small number of practices at a time to ensure quality.</div>
           </div>
         </div>
