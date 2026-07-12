@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procella AI — AI Implementation for Professional Firms</title>
+<meta name="description" content="Procella AI helps accounting, legal, and medical practices implement AI workflows that save 2+ hours per staff member per day. Take the free AI readiness audit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B1C38;
+  --navy-mid: #152D55;
+  --teal: #00C9B1;
+  --teal-dim: #00a896;
+  --teal-glow: rgba(0,201,177,0.12);
+  --white: #FFFFFF;
+  --slate: #8A9BB5;
+  --slate-light: #C5D0E0;
+  --bg: #F4F7FB;
+  --card: #FFFFFF;
+  --danger: #FF5C5C;
+  --warn: #FFB347;
+  --good: #00C9B1;
+  --border: #E2E8F0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--navy); }
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(11,28,56,0.97);
+  backdrop-filter: blur(12px);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo { font-family: 'Sora', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--white); letter-spacing: -0.02em; }
+.logo span { color: var(--teal); }
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a { font-size: 0.875rem; color: var(--slate-light); text-decoration: none; transition: color 0.15s; }
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  background: var(--teal); color: var(--navy) !important;
+  padding: 0.5rem 1.25rem; border-radius: 8px;
+  font-weight: 600 !important; font-size: 0.85rem !important;
+  transition: background 0.15s !important;
+}
+.nav-cta:hover { background: var(--teal-dim) !important; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 60%, #1a3a6b 100%);
+  padding: 7rem 2rem 6rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,201,177,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--teal);
+  background: rgba(0,201,177,0.1); border: 1px solid rgba(0,201,177,0.2);
+  padding: 0.35rem 1rem; border-radius: 100px; margin-bottom: 1.75rem;
+}
+.hero h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800; line-height: 1.1;
+  color: var(--white); margin-bottom: 1.25rem;
+  max-width: 800px; margin-left: auto; margin-right: auto;
+}
+.hero h1 em { color: var(--teal); font-style: normal; }
+.hero p {
+  color: var(--slate-light); font-size: 1.1rem;
+  max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.75;
+}
+.hero-ctas { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+.btn-hero-primary {
+  background: var(--teal); color: var(--navy);
+  padding: 0.9rem 2rem; border-radius: 10px;
+  font-size: 0.95rem; font-weight: 700; border: none; cursor: pointer;
+  transition: all 0.18s; text-decoration: none; display: inline-block;
+}
+.btn-hero-primary:hover { background: var(--teal-dim); transform: translateY(-1px); }
+.btn-hero-ghost {
+  background: transparent; color: var(--white);
+  padding: 0.9rem 2rem; border-radius: 10px;
+  font-size: 0.95rem; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+  transition: all 0.18s; text-decoration: none; display: inline-block;
+}
+.btn-hero-ghost:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+.hero-stats {
+  display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+  padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.08);
+}
+.hero-stat strong {
+  display: block; font-family: 'Sora', sans-serif;
+  font-size: 2rem; font-weight: 800; color: var(--teal);
+}
+.hero-stat span { font-size: 0.8rem; color: var(--slate-light); line-height: 1.5; }
+
+/* LOGOS / SOCIAL PROOF */
+.proof-bar {
+  background: var(--bg); border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem; text-align: center;
+}
+.proof-bar p { font-size: 0.8rem; color: var(--slate); letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500; }
+
+/* SECTIONS */
+section { padding: 5rem 2rem; }
+.section-eyebrow {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: 'Sora', sans-serif; font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 700; line-height: 1.2; color: var(--navy); margin-bottom: 1rem;
+}
+.section-sub { font-size: 1rem; color: var(--slate); line-height: 1.75; max-width: 560px; }
+.container { max-width: 1040px; margin: 0 auto; }
+
+/* HOW IT WORKS */
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3.5rem; }
+.how-card {
+  background: var(--bg); border-radius: 16px; padding: 2rem;
+  border: 1px solid var(--border); position: relative;
+}
+.how-num {
+  font-family: 'Sora', sans-serif; font-size: 3rem; font-weight: 800;
+  color: var(--teal); opacity: 0.2; line-height: 1; margin-bottom: 1rem;
+}
+.how-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 0.5rem; }
+.how-card p { font-size: 0.875rem; color: var(--slate); line-height: 1.7; }
+.how-arrow {
+  position: absolute; right: -1.25rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem; color: var(--teal); z-index: 1;
+}
+
+/* INDUSTRIES */
+.ind-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.ind-card {
+  background: var(--white); border-radius: 16px; padding: 2rem;
+  border: 1px solid var(--border); transition: all 0.2s;
+}
+.ind-card:hover { border-color: var(--teal); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,201,177,0.1); }
+.ind-icon { font-size: 2.25rem; margin-bottom: 1rem; }
+.ind-card h3 { font-size: 1.05rem; font-weight: 600; color: var(--navy); margin-bottom: 0.75rem; }
+.ind-list { list-style: none; }
+.ind-list li {
+  font-size: 0.85rem; color: var(--slate); padding: 0.35rem 0;
+  border-bottom: 1px solid var(--bg); display: flex; align-items: center; gap: 0.5rem;
+}
+.ind-list li:last-child { border-bottom: none; }
+.ind-list li::before { content: '✓'; color: var(--teal); font-weight: 700; font-size: 0.8rem; }
+
+/* RESULTS */
+.results-bg { background: var(--navy); }
+.results-bg .section-title { color: var(--white); }
+.results-bg .section-sub { color: var(--slate-light); }
+.results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 3rem; }
+.result-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 1.75rem;
+}
+.result-num {
+  font-family: 'Sora', sans-serif; font-size: 2.5rem; font-weight: 800;
+  color: var(--teal); margin-bottom: 0.5rem;
+}
+.result-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--white); margin-bottom: 0.4rem; }
+.result-card p { font-size: 0.83rem; color: var(--slate-light); line-height: 1.6; }
+
+/* GUARANTEE */
+.guarantee-card {
+  background: var(--teal-glow); border: 1px solid rgba(0,201,177,0.25);
+  border-radius: 20px; padding: 3rem; text-align: center; margin-top: 3rem;
+}
+.guarantee-card h3 {
+  font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700;
+  color: var(--white); margin-bottom: 0.75rem;
+}
+.guarantee-card p { color: var(--slate-light); font-size: 0.95rem; line-height: 1.7; max-width: 500px; margin: 0 auto; }
+
+/* PROCESS */
+.process-steps { margin-top: 3.5rem; }
+.process-step {
+  display: grid; grid-template-columns: 64px 1fr; gap: 1.5rem;
+  align-items: flex-start; padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.process-step:last-child { border-bottom: none; }
+.step-num {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--teal-glow); border: 1px solid rgba(0,201,177,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: var(--teal);
+  flex-shrink: 0;
+}
+.step-content h3 { font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 0.4rem; }
+.step-content p { font-size: 0.875rem; color: var(--slate); line-height: 1.7; }
+.step-tag {
+  display: inline-block; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--teal); background: var(--teal-glow);
+  border: 1px solid rgba(0,201,177,0.2);
+  padding: 0.25rem 0.6rem; border-radius: 6px; margin-bottom: 0.5rem;
+}
+
+/* AUDIT SECTION */
+.audit-section { background: var(--bg); }
+
+/* INDUSTRY SELECTOR */
+.industry-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;
+}
+.industry-card {
+  background: var(--white); border: 2px solid var(--border);
+  border-radius: 12px; padding: 1.25rem; cursor: pointer;
+  text-align: center; transition: all 0.18s;
+  box-shadow: 0 2px 8px rgba(15,31,61,0.05);
+}
+.industry-card:hover { border-color: var(--teal); transform: translateY(-2px); }
+.industry-card.active { border-color: var(--teal); background: #F0FBF9; }
+.industry-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.industry-card h3 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 0.25rem; }
+.industry-card p { font-size: 0.75rem; color: var(--slate); line-height: 1.4; }
+
+/* AUDIT TOOL */
+.audit-wrap { max-width: 720px; margin: 0 auto; display: none; }
+.progress-bar-wrap { background: #DDE5F0; border-radius: 100px; height: 6px; margin-bottom: 0.5rem; }
+.progress-bar-fill { height: 6px; border-radius: 100px; background: var(--teal); transition: width 0.4s ease; }
+.progress-label { font-size: 0.8rem; color: var(--slate); margin-bottom: 1.75rem; }
+.progress-label strong { color: var(--navy); }
+
+.question-card {
+  background: var(--white); border-radius: 16px; padding: 2rem;
+  box-shadow: 0 4px 24px rgba(15,31,61,0.08); margin-bottom: 1.25rem; display: none;
+  border: 1px solid var(--border);
+}
+.question-card.active { display: block; }
+.q-number { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; }
+.q-text { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--navy); line-height: 1.4; margin-bottom: 0.5rem; }
+.q-sub { font-size: 0.85rem; color: var(--slate); margin-bottom: 1.5rem; line-height: 1.6; }
+.options { display: flex; flex-direction: column; gap: 0.6rem; }
+.option {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.85rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 10px; cursor: pointer; transition: all 0.18s;
+  font-size: 0.88rem; color: var(--navy); line-height: 1.5;
+}
+.option:hover { border-color: var(--teal); background: #F0FBF9; }
+.option.selected { border-color: var(--teal); background: #E6FAF7; font-weight: 500; }
+.option-dot {
+  width: 18px; height: 18px; border-radius: 50%; border: 2px solid #DDE5F0;
+  flex-shrink: 0; margin-top: 2px; transition: all 0.18s;
+}
+.option.selected .option-dot { background: var(--teal); border-color: var(--teal); }
+.q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.btn { padding: 0.7rem 1.75rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s; font-family: 'Inter', sans-serif; }
+.btn-primary { background: var(--teal); color: var(--navy); }
+.btn-primary:hover { background: var(--teal-dim); }
+.btn-primary:disabled { background: var(--slate-light); cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--slate); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--slate); color: var(--navy); }
+
+/* LEAD FORM */
+.lead-form-card { background: var(--white); border-radius: 16px; padding: 2rem; box-shadow: 0 4px 24px rgba(15,31,61,0.08); display: none; border: 1px solid var(--border); }
+.lead-form-card.active { display: block; }
+.lead-form-card h2 { font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+.lead-form-card p { color: var(--slate); font-size: 0.9rem; margin-bottom: 1.75rem; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+.form-group label { font-size: 0.8rem; font-weight: 600; color: var(--navy); }
+.form-group input, .form-group select {
+  padding: 0.7rem 1rem; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 0.9rem; font-family: 'Inter', sans-serif;
+  color: var(--navy); transition: border 0.18s; outline: none;
+}
+.form-group input:focus, .form-group select:focus { border-color: var(--teal); }
+.form-disclaimer { font-size: 0.75rem; color: var(--slate); margin-top: 0.75rem; line-height: 1.5; }
+
+/* RESULTS */
+.results-wrap { display: none; }
+.results-header {
+  background: var(--navy); border-radius: 16px; padding: 2.5rem 2rem;
+  color: var(--white); text-align: center; margin-bottom: 1.5rem; position: relative; overflow: hidden;
+}
+.results-header::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 240px; height: 240px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,201,177,0.1) 0%, transparent 70%);
+}
+.score-dial { width: 150px; height: 150px; margin: 0 auto 1.5rem; position: relative; }
+.score-dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.score-dial .track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 10; }
+.score-dial .fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1); }
+.score-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+.score-number { font-family: 'Sora', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--white); line-height: 1; }
+.score-max { font-size: 0.75rem; color: var(--slate-light); }
+.results-header h2 { font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+.results-header p { color: var(--slate-light); font-size: 0.9rem; line-height: 1.6; max-width: 480px; margin: 0 auto; }
+
+.res-metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
+.res-metric {
+  background: var(--white); border-radius: 12px; padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(15,31,61,0.06); border: 1px solid var(--border);
+}
+.res-metric-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); margin-bottom: 0.4rem; }
+.res-metric-val { font-family: 'Sora', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+.res-metric-sub { font-size: 0.78rem; color: var(--slate); margin-top: 0.2rem; }
+
+.findings-card { background: var(--white); border-radius: 16px; padding: 1.75rem; box-shadow: 0 2px 12px rgba(15,31,61,0.06); margin-bottom: 1rem; border: 1px solid var(--border); }
+.findings-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--bg); }
+.finding-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--bg); }
+.finding-row:last-child { border-bottom: none; }
+.finding-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.dot-red { background: var(--danger); }
+.dot-amber { background: var(--warn); }
+.dot-green { background: var(--good); }
+.finding-title { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 0.2rem; }
+.finding-desc { font-size: 0.82rem; color: var(--slate); line-height: 1.6; }
+
+.cta-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-radius: 16px; padding: 2.5rem; text-align: center; color: var(--white); margin-bottom: 1rem;
+}
+.cta-card h3 { font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+.cta-card p { color: var(--slate-light); font-size: 0.9rem; margin-bottom: 1.75rem; line-height: 1.6; }
+.btn-cta { background: var(--teal); color: var(--navy); padding: 0.9rem 2.5rem; border-radius: 10px; font-size: 0.95rem; font-weight: 700; border: none; cursor: pointer; transition: background 0.18s; font-family: 'Inter', sans-serif; }
+.btn-cta:hover { background: var(--teal-dim); }
+.cta-note { font-size: 0.75rem; color: var(--slate); margin-top: 1rem; }
+
+/* TESTIMONIALS */
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.testi-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; }
+.testi-stars { color: #F59E0B; font-size: 0.85rem; margin-bottom: 1rem; letter-spacing: 2px; }
+.testi-text { font-size: 0.9rem; color: var(--navy); line-height: 1.7; margin-bottom: 1.25rem; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem; color: var(--white);
+  background: var(--navy-mid); flex-shrink: 0;
+}
+.testi-name { font-size: 0.85rem; font-weight: 600; color: var(--navy); }
+.testi-role { font-size: 0.78rem; color: var(--slate); }
+
+/* FAQ */
+.faq-list { margin-top: 2.5rem; max-width: 720px; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.25rem 0; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--navy);
+  gap: 1rem;
+}
+.faq-q .arrow { color: var(--teal); font-size: 1.1rem; transition: transform 0.2s; flex-shrink: 0; }
+.faq-item.open .faq-q .arrow { transform: rotate(45deg); }
+.faq-a { font-size: 0.875rem; color: var(--slate); line-height: 1.8; padding-bottom: 1.25rem; display: none; }
+.faq-item.open .faq-a { display: block; }
+
+/* FOOTER */
+footer {
+  background: var(--navy); color: var(--slate-light);
+  padding: 3rem 2rem 2rem; text-align: center;
+}
+.footer-logo { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+.footer-logo span { color: var(--teal); }
+footer p { font-size: 0.8rem; color: var(--slate); margin-top: 1.5rem; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .how-grid, .ind-grid, .results-grid, .testi-grid { grid-template-columns: 1fr; }
+  .industry-cards { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .res-metric-grid { grid-template-columns: 1fr; }
+  .how-arrow { display: none; }
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  section { padding: 3.5rem 1.25rem; }
+  .hero { padding: 5rem 1.25rem 4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Procella <span>AI</span></div>
+  <div class="nav-links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#industries">Industries</a>
+    <a href="#audit">Free audit</a>
+    <a href="#audit" class="nav-cta">Take the audit →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">AI Implementation for Professional Firms</div>
+  <h1>Your team spends 40% of their day<br>on work <em>AI should be doing</em></h1>
+  <p>Procella AI implements custom AI workflows inside accounting, legal, and medical practices — saving 2+ hours per staff member per day, guaranteed.</p>
+  <div class="hero-ctas">
+    <a href="#audit" class="btn-hero-primary">Take the free AI readiness audit →</a>
+    <a href="#how-it-works" class="btn-hero-ghost">See how it works</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>2+ hrs</strong><span>saved per staff<br>member per day</span></div>
+    <div class="hero-stat"><strong>30 days</strong><span>to first results<br>or you don't pay</span></div>
+    <div class="hero-stat"><strong>3 industries</strong><span>accounting · legal<br>medical</span></div>
+  </div>
+</section>
+
+<div class="proof-bar">
+  <p>Trusted by accounting firms · law practices · medical clinics across the United States</p>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="section-eyebrow">How it works</div>
+    <h2 class="section-title">From audit to results in 30 days</h2>
+    <p class="section-sub">We don't sell you software and leave. We implement everything, train your team, and guarantee results before you pay a cent more.</p>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <h3>Take the free audit</h3>
+        <p>Answer 10 questions about your current workflow. Get an instant AI readiness score and a personalised report showing exactly where you're losing time and money.</p>
+        <div class="how-arrow">→</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <h3>Free strategy call</h3>
+        <p>We walk through your results together on a 30-minute call. No sales pitch — just a clear picture of what AI can realistically do for your specific practice and what it would take.</p>
+        <div class="how-arrow">→</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <h3>We implement everything</h3>
+        <p>We handle the full implementation — setup, integration with your existing tools, staff training, and fine-tuning. You see results within 30 days or you pay nothing beyond the audit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section id="industries" style="background: var(--bg);">
+  <div class="container">
+    <div class="section-eyebrow">Industries we serve</div>
+    <h2 class="section-title">Built for professional service firms</h2>
+    <p class="section-sub">We go deep in three industries — understanding your workflows, compliance requirements, and the specific tools you already use.</p>
+    <div class="ind-grid">
+      <div class="ind-card">
+        <div class="ind-icon">📊</div>
+        <h3>Accounting & Bookkeeping</h3>
+        <ul class="ind-list">
+          <li>Automated document intake & sorting</li>
+          <li>AI-powered bank reconciliation</li>
+          <li>Client report generation</li>
+          <li>Month-end close automation</li>
+          <li>Client communication workflows</li>
+        </ul>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">⚖️</div>
+        <h3>Legal Practice</h3>
+        <ul class="ind-list">
+          <li>Automated client intake & conflicts</li>
+          <li>AI-assisted document drafting</li>
+          <li>Deadline & calendar management</li>
+          <li>Passive billable time capture</li>
+          <li>Client status communication</li>
+        </ul>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🏥</div>
+        <h3>Medical & Dental</h3>
+        <ul class="ind-list">
+          <li>Scheduling & no-show reduction</li>
+          <li>Insurance eligibility automation</li>
+          <li>AI-assisted clinical documentation</li>
+          <li>Claims & denial management</li>
+          <li>Patient follow-up workflows</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="results-bg">
+  <div class="container">
+    <div class="section-eyebrow">Results</div>
+    <h2 class="section-title">What practices typically see in 90 days</h2>
+    <p class="section-sub">These are conservative numbers based on industry benchmarks for firms at the start of their AI implementation journey.</p>
+    <div class="results-grid">
+      <div class="result-card">
+        <div class="result-num">2.1 hrs</div>
+        <h3>Saved per staff member per day</h3>
+        <p>By automating document intake, reconciliation, and routine client communication — the highest-volume repetitive tasks in most practices.</p>
+      </div>
+      <div class="result-card">
+        <div class="result-num">34%</div>
+        <h3>Reduction in administrative overhead</h3>
+        <p>Staff spend more time on billable, high-value work and less on tasks that don't require human judgment.</p>
+      </div>
+      <div class="result-card">
+        <div class="result-num">$40K+</div>
+        <h3>Annual value recovered per practice</h3>
+        <p>Between recovered billable hours, reduced errors, and faster client turnaround — most practices see significant financial impact within 6 months.</p>
+      </div>
+      <div class="result-card">
+        <div class="result-num">30 days</div>
+        <h3>Time to measurable results</h3>
+        <p>We move fast. Within 30 days of engagement, your team will have working AI workflows live in their daily operations — not a pilot, not a prototype.</p>
+      </div>
+    </div>
+    <div class="guarantee-card">
+      <h3>The Procella AI Guarantee</h3>
+      <p>If your practice doesn't see measurable time savings within 30 days of implementation, you don't pay for the implementation. We stand behind our work completely — no fine print.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">Our process</div>
+    <h2 class="section-title">What a 30-day implementation looks like</h2>
+    <p class="section-sub">We've designed our process to cause minimal disruption to your practice while delivering maximum impact.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-tag">Week 1</div>
+          <h3>Workflow mapping & audit</h3>
+          <p>We spend the first week understanding your practice from the inside — your current tools, your team's daily workflows, your biggest pain points. We map every manual task that's a candidate for automation.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-tag">Week 2</div>
+          <h3>Implementation plan & approval</h3>
+          <p>We present a prioritised implementation plan — which workflows to automate first, what tools we'll use, what the integration looks like with your existing systems. You approve before we build anything.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-tag">Weeks 3–4</div>
+          <h3>Build, integrate & train</h3>
+          <p>We implement the AI workflows, integrate them with your existing software, and train your team. We handle everything — you don't need any technical knowledge.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-tag">Day 30</div>
+          <h3>Results review & next steps</h3>
+          <p>We review the results together — time saved, errors reduced, staff feedback. If we've hit our targets, we discuss ongoing optimisation. If not, you don't pay. Simple.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background: var(--bg);">
+  <div class="container">
+    <div class="section-eyebrow">What clients say</div>
+    <h2 class="section-title">Real results from real practices</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"We were spending 3 hours every morning just sorting and filing client documents. Procella AI automated the entire intake process. That time goes straight to billable work now."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">MK</div>
+          <div><div class="testi-name">Michelle K.</div><div class="testi-role">CPA, 8-person firm · Ohio</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I was skeptical that AI could work in a law firm without creating compliance headaches. They mapped everything carefully and what they implemented is clean, auditable, and fast."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">DR</div>
+          <div><div class="testi-name">David R.</div><div class="testi-role">Solo attorney · Texas</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Our no-show rate dropped 28% in the first month just from better automated reminders. The insurance verification automation alone has saved us from so many day-of billing surprises."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">SP</div>
+          <div><div class="testi-name">Sarah P.</div><div class="testi-role">Practice manager · Dental clinic · Florida</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIT SECTION -->
+<section class="audit-section" id="audit">
+  <div class="container">
+    <div style="text-align:center; margin-bottom: 2.5rem;">
+      <div class="section-eyebrow">Free AI readiness audit</div>
+      <h2 class="section-title">Find out where your practice stands</h2>
+      <p class="section-sub" style="margin: 0 auto;">Answer 10 questions and get a personalised AI readiness score, a breakdown of your biggest inefficiencies, and a prioritised action plan — all free, instantly.</p>
+    </div>
+
+    <div style="max-width: 720px; margin: 0 auto;">
+      <div style="margin-bottom: 1.5rem;">
+        <p style="font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 0.75rem; text-align: center;">Select your practice type to begin</p>
+        <div class="industry-cards">
+          <div class="industry-card" onclick="selectIndustry('accounting', this)">
+            <div class="icon">📊</div>
+            <h3>Accounting & Bookkeeping</h3>
+            <p>CPA firms, bookkeepers, tax practices</p>
+          </div>
+          <div class="industry-card" onclick="selectIndustry('legal', this)">
+            <div class="icon">⚖️</div>
+            <h3>Legal Practice</h3>
+            <p>Solo attorneys, small law firms</p>
+          </div>
+          <div class="industry-card" onclick="selectIndustry('medical', this)">
+            <div class="icon">🏥</div>
+            <h3>Medical & Dental</h3>
+            <p>Clinics, dental practices</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-wrap" id="auditWrap">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="progress-label">Question <strong id="qCurrent">1</strong> of <strong>10</strong></div>
+        <div id="questionsContainer"></div>
+
+        <div class="lead-form-card" id="leadForm">
+          <h2>Almost there — where should we send your report?</h2>
+          <p>Your personalised AI readiness report is ready. Enter your details below to reveal your score, key findings, and a prioritised action plan.</p>
+          <div class="form-row">
+            <div class="form-group"><label>First name</label><input type="text" id="fname" placeholder="Jane" /></div>
+            <div class="form-group"><label>Last name</label><input type="text" id="lname" placeholder="Smith" /></div>
+          </div>
+          <div class="form-group"><label>Work email</label><input type="email" id="email" placeholder="jane@smithcpa.com" /></div>
+          <div class="form-group"><label>Practice name</label><input type="text" id="practice" placeholder="Smith & Associates" /></div>
+          <div class="form-group">
+            <label>Number of staff (including yourself)</label>
+            <select id="staff">
+              <option value="">Select...</option>
+              <option>Just me</option><option>2–5</option><option>6–15</option><option>16–30</option><option>30+</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" style="width:100%; padding:0.9rem;" onclick="showResults()">View my AI readiness report →</button>
+          <p class="form-disclaimer">We will never share your details. You may receive a follow-up from Procella AI with resources relevant to your results.</p>
+        </div>
+
+        <div class="results-wrap" id="resultsWrap">
+          <div class="results-header">
+            <div class="score-dial">
+              <svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="40"/><circle class="fill" id="dialFill" cx="50" cy="50" r="40"/></svg>
+              <div class="score-label"><div class="score-number" id="scoreNumber">0</div><div class="score-max">out of 100</div></div>
+            </div>
+            <h2 id="scoreHeadline"></h2>
+            <p id="scoreSubtext"></p>
+          </div>
+          <div class="res-metric-grid">
+            <div class="res-metric"><div class="res-metric-label">Estimated weekly hours lost</div><div class="res-metric-val" id="hoursLost">—</div><div class="res-metric-sub">to manual, automatable tasks</div></div>
+            <div class="res-metric"><div class="res-metric-label">Annual cost of inefficiency</div><div class="res-metric-val" id="annualCost">—</div><div class="res-metric-sub">in lost billable time</div></div>
+            <div class="res-metric"><div class="res-metric-label">AI adoption level</div><div class="res-metric-val" id="adoptionLevel">—</div><div class="res-metric-sub">vs industry average</div></div>
+            <div class="res-metric"><div class="res-metric-label">Top opportunity area</div><div class="res-metric-val" id="topOpportunity" style="font-size:1rem;">—</div><div class="res-metric-sub">highest ROI starting point</div></div>
+          </div>
+          <div class="findings-card">
+            <h3>Key findings for your practice</h3>
+            <div id="findingsList"></div>
+          </div>
+          <div class="cta-card">
+            <h3>Ready to fix this in 30 days?</h3>
+            <p>Book a free 30-minute strategy call. We'll walk through your results and show you exactly what we'd implement first — no obligation, no sales pressure.</p>
+            <button class="btn-cta" onclick="window.open('https://calendly.com', '_blank')">Book your free strategy call →</button>
+            <div class="cta-note">Spots are limited — we work with a small number of practices at a time to ensure quality.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 class="section-title">Common questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Do I need any technical knowledge to work with Procella AI? <span class="arrow">+</span></div>
+        <div class="faq-a">None at all. We handle 100% of the technical implementation. Your team just needs to know how to use the new workflows — which we train them on as part of the engagement.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Will AI integrate with the software we already use? <span class="arrow">+</span></div>
+        <div class="faq-a">Yes. We work with the tools you already have — QuickBooks, Clio, Dentrix, Google Workspace, Microsoft 365, and many others. We don't ask you to switch platforms.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What does the 30-day guarantee mean exactly? <span class="arrow">+</span></div>
+        <div class="faq-a">If your practice doesn't see measurable, agreed-upon time savings within 30 days of going live with the AI workflows we implement, you don't pay for the implementation. We define the success metrics together upfront — there's no ambiguity.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">How much does an implementation typically cost? <span class="arrow">+</span></div>
+        <div class="faq-a">Every engagement is scoped based on your specific practice size and the workflows we're automating. We discuss pricing transparently on the strategy call — typically after reviewing your audit results together. There is no cost for the audit or the strategy call.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Is our client data safe? <span class="arrow">+</span></div>
+        <div class="faq-a">Data security is our highest priority — especially given the sensitive nature of accounting, legal, and medical data. All implementations use enterprise-grade security, and we work within your existing compliance frameworks (HIPAA, attorney-client privilege, etc.).</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">How is this different from just buying an AI tool off the shelf? <span class="arrow">+</span></div>
+        <div class="faq-a">Off-the-shelf AI tools are generic — they're not configured for your specific workflows, your staff's habits, or your existing software stack. We do the full implementation, customisation, and training. Most practices that try AI tools on their own see limited results because the tool isn't properly integrated into how they actually work.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Procella <span>AI</span></div>
+  <p style="margin-top: 0.5rem; color: var(--slate-light); font-size: 0.85rem;">AI implementation for accounting, legal, and medical practices.</p>
+  <p>© 2025 Procella AI. All rights reserved.</p>
+</footer>
+
+<script>
+const QUESTIONS = {
+  accounting: [
+    { q: "How do you currently handle client document collection?", sub: "Think about how clients send you documents and how your team processes them.", options: ["Clients email everything — we sort and file manually", "We have a client portal but still do a lot of manual sorting", "Mostly automated with some manual review", "Fully automated — AI handles intake and categorisation"] },
+    { q: "How long does your month-end close process typically take per client?", sub: "", options: ["More than 5 days", "3–5 days", "1–2 days", "Under a day — it's largely automated"] },
+    { q: "How do you handle bank reconciliation?", sub: "", options: ["Fully manual — we download statements and match line by line", "Mostly manual with some software assistance", "Software does most of it, we review exceptions", "AI-powered — minimal human involvement"] },
+    { q: "How does your team handle repetitive client questions?", sub: "Status updates, deadline reminders, balance enquiries.", options: ["We respond to each one individually by email or phone", "We have templates but someone still sends them manually", "Partially automated — some canned responses", "Automated — clients get instant answers without staff involvement"] },
+    { q: "How do you currently generate client reports and financial summaries?", sub: "", options: ["Manual — we build them from scratch in Excel/Word each time", "Semi-manual — templates exist but need significant customisation", "Mostly automated but staff review and adjust", "Fully automated — reports generate and send without manual effort"] },
+    { q: "How does your team track billable hours?", sub: "", options: ["Manual timesheets or memory — often not captured fully", "Time tracking software but lots of gaps", "Software with decent coverage", "Automated time capture — nothing falls through the cracks"] },
+    { q: "How are new client onboarding and engagement letters handled?", sub: "", options: ["Manual process — takes hours per new client", "Some templates, but still significant manual effort", "Mostly templated with light customisation", "Automated — onboarding completes with minimal staff time"] },
+    { q: "Do you have a system for proactively flagging issues in client accounts?", sub: "Missed payments, unusual transactions, anomalies.", options: ["No — we find out when the client tells us", "We check periodically but it's not systematic", "We have alerts for some things", "Yes — AI monitors accounts and flags anomalies automatically"] },
+    { q: "How do you currently find and win new clients?", sub: "", options: ["Mostly word of mouth — no real system", "We do some outreach but it's inconsistent", "Regular marketing with some automation", "Systematic pipeline with AI-assisted lead nurturing"] },
+    { q: "What percentage of your team's weekly time goes to repetitive manual tasks?", sub: "", options: ["More than 60%", "40–60%", "20–40%", "Under 20%"] }
+  ],
+  legal: [
+    { q: "How do you handle initial client intake and conflict checks?", sub: "Think about what happens from the moment a potential client reaches out.", options: ["Fully manual — forms, emails, phone calls, spreadsheets", "Some forms but we manually review and check conflicts", "Mostly systematic with some manual steps", "Automated — intake, conflict check, and engagement letter require minimal staff effort"] },
+    { q: "How does your firm handle legal research?", sub: "", options: ["Manual — attorneys or paralegals search databases and summarise", "Mostly manual with some AI assist for initial searches", "AI assists significantly, attorneys review and refine", "AI-led research with attorney oversight for final judgement"] },
+    { q: "How are contracts and documents drafted in your practice?", sub: "", options: ["From scratch each time — significant attorney time", "Templates exist but need heavy customisation", "Templates with light customisation and AI drafting assist", "AI drafts, attorney reviews — significantly faster than traditional"] },
+    { q: "How do you manage deadlines, court dates, and compliance calendars?", sub: "", options: ["Manual tracking in calendars or spreadsheets", "Practice management software but lots of manual input", "Automated reminders with some manual oversight", "Fully automated — nothing falls through the cracks"] },
+    { q: "How does your firm handle client billing and time capture?", sub: "", options: ["Manual timesheets — lots of time goes unbilled", "Time tracking software but still capturing under 90% of time", "Software captures most time with some gaps", "Automated passive time capture — near-complete billing"] },
+    { q: "How do clients get status updates on their matters?", sub: "", options: ["They call or email us — we respond manually", "We send periodic email updates", "Client portal with some automated updates", "Automated real-time status available to clients anytime"] },
+    { q: "How are discovery documents and case files reviewed and organised?", sub: "", options: ["Manual review — attorneys and paralegals read everything", "Some organisational tools, mostly manual review", "Software assists with organisation, AI helps with key document flagging", "AI-powered review significantly reduces manual reading time"] },
+    { q: "Does your firm proactively identify upsell opportunities with existing clients?", sub: "", options: ["No — it's ad hoc if it happens at all", "We try but it's not systematic", "Some tracking of client matters and periodic review", "Systematic — CRM flags opportunities automatically"] },
+    { q: "How do you handle routine correspondence?", sub: "Acknowledgement letters, status emails, follow-ups.", options: ["Manually drafted each time", "Templates that staff customise and send", "Semi-automated — staff review before sending", "Automated — AI drafts and sends with attorney approval only for key items"] },
+    { q: "What percentage of your team's time goes to non-billable administrative work?", sub: "", options: ["More than 50%", "30–50%", "15–30%", "Under 15%"] }
+  ],
+  medical: [
+    { q: "How does your practice handle appointment scheduling and reminders?", sub: "", options: ["Phone calls only — patients call us, we call them for reminders", "Online booking exists but reminders are manual", "Online booking with automated reminders", "Fully automated — scheduling, reminders, and confirmations require no staff effort"] },
+    { q: "How are patient intake forms and medical history collected?", sub: "", options: ["Paper forms completed in the waiting room", "Paper forms with some digital capture", "Digital forms but staff still manually enter data", "Fully digital — data flows directly into the patient record"] },
+    { q: "How does your practice handle insurance eligibility verification?", sub: "", options: ["Manual — staff call or check portals for each patient", "Mostly manual with some batch checking", "Automated for most patients, manual for exceptions", "Fully automated — eligibility checked and flagged before every appointment"] },
+    { q: "How are clinical notes and documentation handled?", sub: "", options: ["Manual — physician types or writes after each appointment", "Dictation that someone transcribes", "EHR templates, still significant manual input", "AI-assisted — voice-to-text with smart templates, minimal post-visit documentation"] },
+    { q: "How does your practice handle billing and claims submission?", sub: "", options: ["Fully manual — staff code and submit each claim", "Some automation but lots of manual coding", "Mostly automated with staff reviewing and submitting", "AI-powered coding and submission — minimal staff involvement"] },
+    { q: "How do you follow up on denied or rejected insurance claims?", sub: "", options: ["Manually — someone tracks and follows up one by one", "Some tracking in software, mostly manual follow-up", "Systematic tracking, semi-automated follow-up", "Automated denial management — system flags, tracks, and prompts re-submission"] },
+    { q: "How does your practice handle patient follow-up after visits?", sub: "", options: ["We don't — patients call us if they have questions", "Manual outreach for some patients", "Automated follow-up messages for some conditions", "Personalised automated follow-up for every patient based on their care plan"] },
+    { q: "How are no-shows and cancellations managed?", sub: "", options: ["We just note them — no systematic follow-up", "Staff call to reschedule manually", "Automated rescheduling for some patients", "Automated waitlist fills cancellations instantly — no revenue lost"] },
+    { q: "Do you have real-time visibility into your practice's financial performance?", sub: "", options: ["No — we find out at month end from our accountant", "Some reporting but it's delayed and incomplete", "Regular reports but not real-time", "Real-time dashboard — we know our numbers anytime"] },
+    { q: "What percentage of your staff's time goes to administrative tasks vs. direct patient care?", sub: "", options: ["More than 60% admin", "40–60% admin", "20–40% admin", "Under 20% admin"] }
+  ]
+};
+
+const SCORE_MAP = [0, 1, 3, 5];
+let selectedIndustry = null;
+let currentQ = 0;
+let answers = [];
+
+function selectIndustry(industry, el) {
+  document.querySelectorAll('.industry-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedIndustry = industry;
+  const wrap = document.getElementById('auditWrap');
+  wrap.style.display = 'block';
+  setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  buildQuestions();
+}
+
+function buildQuestions() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = '';
+  const qs = QUESTIONS[selectedIndustry];
+  answers = new Array(qs.length).fill(null);
+  qs.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card' + (i === 0 ? ' active' : '');
+    card.id = 'q' + i;
+    card.innerHTML = `
+      <div class="q-number">Question ${i+1} of ${qs.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ''}
+      <div class="options">${q.options.map((opt, j) => `
+        <div class="option" onclick="selectOption(${i}, ${j}, this)">
+          <div class="option-dot"></div><span>${opt}</span>
+        </div>`).join('')}
+      </div>
+      <div class="q-nav">
+        ${i > 0 ? `<button class="btn btn-ghost" onclick="goTo(${i-1})">← Back</button>` : '<span></span>'}
+        <button class="btn btn-primary" id="nextBtn${i}" onclick="${i < qs.length-1 ? `goTo(${i+1})` : 'showLeadForm()'}" disabled>
+          ${i < qs.length-1 ? 'Next →' : 'Get my report →'}
+        </button>
+      </div>`;
+    container.appendChild(card);
+  });
+  updateProgress();
+}
+
+function selectOption(qIdx, optIdx, el) {
+  document.getElementById('q'+qIdx).querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[qIdx] = optIdx;
+  document.getElementById('nextBtn'+qIdx).disabled = false;
+}
+
+function goTo(idx) {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('q'+idx).classList.add('active');
+  currentQ = idx;
+  document.getElementById('qCurrent').textContent = idx + 1;
+  updateProgress();
+  document.getElementById('auditWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('progressBar').style.width = (answered / 10 * 100) + '%';
+}
+
+function showLeadForm() {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('leadForm').classList.add('active');
+  document.getElementById('auditWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showResults() {
+  const fname = document.getElementById('fname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if (!fname || !email) { alert('Please enter your name and email to continue.'); return; }
+  document.getElementById('leadForm').classList.remove('active');
+  const rw = document.getElementById('resultsWrap');
+  rw.style.display = 'block';
+  document.getElementById('auditWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const totalPossible = 10 * 5;
+  const raw = answers.reduce((sum, a) => sum + (a !== null ? SCORE_MAP[a] : 0), 0);
+  const score = Math.round((raw / totalPossible) * 100);
+
+  const circumference = 2 * Math.PI * 40;
+  const fill = document.getElementById('dialFill');
+  fill.style.strokeDasharray = circumference;
+  fill.style.strokeDashoffset = circumference;
+  fill.style.stroke = score < 35 ? '#FF5C5C' : score < 65 ? '#FFB347' : '#00C9B1';
+  setTimeout(() => { fill.style.strokeDashoffset = circumference - (score / 100) * circumference; }, 100);
+
+  let n = 0;
+  const ticker = setInterval(() => {
+    n = Math.min(n + Math.ceil(score / 40), score);
+    document.getElementById('scoreNumber').textContent = n;
+    if (n >= score) clearInterval(ticker);
+  }, 30);
+
+  const headlines = {
+    low: `Your practice is significantly exposed to AI disruption`,
+    mid: `You're making progress but leaving real value on the table`,
+    high: `Strong foundation — now it's time to optimise`
+  };
+  const subtexts = {
+    low: `${fname}, your results show that most of your team's time is still going to manual, repeatable tasks. Competitors who implement AI now will be able to serve more clients at lower cost.`,
+    mid: `${fname}, you've started the AI journey but there are several high-value areas where manual work is still costing you hours every week. The improvements with the highest ROI are also the easiest to implement.`,
+    high: `${fname}, your practice is ahead of most in AI adoption. The opportunity now is connecting your existing tools to eliminate remaining manual workflows.`
+  };
+  const tier = score < 35 ? 'low' : score < 65 ? 'mid' : 'high';
+  document.getElementById('scoreHeadline').textContent = headlines[tier];
+  document.getElementById('scoreSubtext').textContent = subtexts[tier];
+
+  document.getElementById('hoursLost').textContent = score < 35 ? '18–24 hrs' : score < 65 ? '10–16 hrs' : '4–8 hrs';
+  document.getElementById('annualCost').textContent = score < 35 ? '$45K–$70K' : score < 65 ? '$25K–$45K' : '$10K–$25K';
+  document.getElementById('adoptionLevel').textContent = score < 35 ? 'Below average' : score < 65 ? 'Average' : 'Above average';
+  const opps = { accounting: ['Document intake', 'Client reporting', 'Predictive analytics'], legal: ['Client intake', 'Document drafting', 'Billing automation'], medical: ['Patient scheduling', 'Insurance billing', 'Clinical documentation'] };
+  document.getElementById('topOpportunity').textContent = opps[selectedIndustry][tier === 'low' ? 0 : tier === 'mid' ? 1 : 2];
+
+  const allFindings = {
+    accounting: [
+      { title: 'Document intake is a bottleneck', desc: 'Manual document sorting and filing is one of the highest-volume time drains in accounting practices. AI-powered intake can reduce this by 80%.', q: 0 },
+      { title: 'Month-end close is taking too long', desc: 'A close process longer than 2 days per client is a red flag. AI reconciliation and automated journal entries can cut this significantly.', q: 1 },
+      { title: 'Bank reconciliation is still largely manual', desc: 'This is the single most automatable task in accounting — AI can handle 95% of matches automatically.', q: 2 },
+      { title: 'Staff time is lost to client questions', desc: 'A client portal with AI-powered status updates can eliminate up to 40% of inbound client enquiries.', q: 3 },
+      { title: 'Report generation is not yet automated', desc: 'AI can generate client-ready financial summaries automatically — reducing report time from hours to minutes.', q: 4 }
+    ],
+    legal: [
+      { title: 'Client intake is creating delays', desc: 'Automated intake with conflict checking and instant engagement letters can cut intake time from hours to minutes.', q: 0 },
+      { title: 'Legal research is consuming attorney time', desc: 'AI legal research tools can reduce research time by 60–70%, freeing attorneys for strategy and client work.', q: 1 },
+      { title: 'Document drafting is not yet AI-assisted', desc: 'AI drafting tools trained on your style and templates can produce first drafts in minutes — cutting drafting time by 50–80%.', q: 2 },
+      { title: 'Deadline management carries unnecessary risk', desc: 'Automated deadline tracking with multi-channel reminders eliminates the risk of missed court dates.', q: 3 },
+      { title: 'Billable time is being lost', desc: 'Passive time tracking tools can capture 15–25% more billable time than manual timesheets.', q: 4 }
+    ],
+    medical: [
+      { title: 'Scheduling and reminders are costing staff hours', desc: 'Automated scheduling with AI-powered reminders can reduce no-shows by up to 30% and free 5–8 hours of staff time per week.', q: 0 },
+      { title: 'Paper-based intake is slowing patient flow', desc: 'Digital intake that flows directly into your EHR eliminates data entry time and reduces waiting room delays.', q: 1 },
+      { title: 'Insurance verification is creating day-of surprises', desc: 'Automated eligibility verification run 48 hours before appointments prevents billing surprises and reduces claim denials.', q: 2 },
+      { title: 'Clinical documentation is taking physician time', desc: 'AI-assisted voice documentation can reduce post-appointment admin from 15+ minutes to under 3 minutes per patient.', q: 3 },
+      { title: 'Claims management needs automation', desc: 'AI-powered medical coding and denial management can increase clean claim rates from the industry average of 85% to over 95%.', q: 4 }
+    ]
+  };
+
+  const pool = allFindings[selectedIndustry];
+  const findings = pool.filter((f, i) => answers[f.q] !== null && answers[f.q] <= 1)
+    .map(f => ({ ...f, level: answers[f.q] === 0 ? 'red' : 'amber' }));
+  if (findings.length < 3) pool.slice(0, 3).forEach(f => { if (!findings.find(x => x.title === f.title)) findings.push({ ...f, level: 'amber' }); });
+
+  document.getElementById('findingsList').innerHTML = findings.slice(0, 5).map(f => `
+    <div class="finding-row">
+      <div class="finding-dot dot-${f.level}"></div>
+      <div><div class="finding-title">${f.title}</div><div class="finding-desc">${f.desc}</div></div>
+    </div>`).join('');
+}
+
+function toggleFaq(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>
