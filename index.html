@@ -855,10 +855,37 @@ function showLeadForm() {
   document.getElementById('auditWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+async function submitToFormspree(fname, email, practice, staff, industry, score) {
+  try {
+    const topOpps = { accounting: ['Document intake', 'Client reporting', 'Predictive analytics'], legal: ['Client intake', 'Document drafting', 'Billing automation'], medical: ['Patient scheduling', 'Insurance billing', 'Clinical documentation'] };
+    const tier = score < 35 ? 0 : score < 65 ? 1 : 2;
+    const topOpp = topOpps[industry] ? topOpps[industry][tier] : 'Workflow automation';
+    await fetch('https://formspree.io/f/xkodnabd', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: fname,
+        email: email,
+        practice_name: practice || 'Not provided',
+        staff_size: staff || 'Not provided',
+        industry: industry || 'Not provided',
+        audit_score: score + '/100',
+        top_opportunity: topOpp,
+        ai_readiness: score < 35 ? 'Below average' : score < 65 ? 'Average' : 'Above average',
+        submitted_at: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }) + ' ET',
+        _subject: '🎯 New Procella AI audit lead — ' + fname + ' (' + (practice || 'unknown practice') + ') — Score: ' + score + '/100'
+      })
+    });
+  } catch(e) { console.log('Form submission error:', e); }
+}
+
 function showResults() {
   const fname = document.getElementById('fname').value.trim();
   const email = document.getElementById('email').value.trim();
   if (!fname || !email) { alert('Please enter your name and email to continue.'); return; }
+  const practice = document.getElementById('practice').value.trim();
+  const staff = document.getElementById('staff').value;
+
   document.getElementById('leadForm').classList.remove('active');
   const rw = document.getElementById('resultsWrap');
   rw.style.display = 'block';
@@ -867,6 +894,9 @@ function showResults() {
   const totalPossible = 10 * 5;
   const raw = answers.reduce((sum, a) => sum + (a !== null ? SCORE_MAP[a] : 0), 0);
   const score = Math.round((raw / totalPossible) * 100);
+
+  // Send to Formspree — notify Pooja immediately
+  submitToFormspree(fname, email, practice, staff, selectedIndustry, score);
 
   const circumference = 2 * Math.PI * 40;
   const fill = document.getElementById('dialFill');
