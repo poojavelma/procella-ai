@@ -354,7 +354,6 @@ function startListening() {
   };
   document.getElementById('setupModal').style.display = 'none';
   document.getElementById('clientPill').textContent = name + (clientContext.biz ? ` · ${clientContext.biz}` : '');
-  document.getElementById('dClientName').textContent = name + (clientContext.biz ? ` — ${clientContext.biz}` : '');
   document.getElementById('startBtn').textContent = 'Stop';
   document.getElementById('startBtn').className = 'start-btn stop';
   document.getElementById('startBtn').onclick = stopListening;
