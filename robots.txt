@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /assistant.html
+
+Sitemap: https://procellaai.com/sitemap.xml

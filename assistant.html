@@ -72,8 +72,6 @@ body {
   font-family: 'Inter', sans-serif; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem;
 }
 .icon-btn:hover { border-color: var(--slate); color: var(--white); }
-.icon-btn.discreet-trigger { border-color: rgba(255,179,71,0.3); color: var(--warn); background: rgba(255,179,71,0.06); }
-.icon-btn.discreet-trigger:hover { background: rgba(255,179,71,0.12); }
 .start-btn {
   background: var(--teal); color: var(--navy);
   border: none; border-radius: 8px; padding: 0.5rem 1.25rem;
@@ -195,88 +193,6 @@ body {
 .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--slate); flex-shrink: 0; }
 .status-dot.active { background: var(--teal); animation: blink 1.4s infinite; }
 
-/* ===================== DISCREET MODE ===================== */
-#discreetMode {
-  display: none;
-  height: 100vh;
-  background: #F8F9FA;
-  color: #1A1A2E;
-  flex-direction: column;
-}
-body.discreet { background: #F8F9FA; }
-
-.d-header {
-  padding: 1rem 1.5rem 0.75rem;
-  border-bottom: 1px solid #E5E7EB;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.d-title { font-size: 1rem; font-weight: 600; color: #1A1A2E; }
-.d-subtitle { font-size: 0.78rem; color: #6B7280; margin-top: 1px; }
-.d-exit {
-  font-size: 0.75rem; color: #9CA3AF; cursor: pointer;
-  background: #F3F4F6; border: 1px solid #E5E7EB;
-  padding: 0.3rem 0.75rem; border-radius: 6px;
-  font-family: 'Inter', sans-serif; transition: all 0.15s;
-}
-.d-exit:hover { background: #E5E7EB; }
-
-.d-body { display: flex; flex: 1; overflow: hidden; }
-
-/* LEFT — fake notes area */
-.d-notes {
-  flex: 1; padding: 1.25rem 1.5rem; overflow-y: auto;
-  border-right: 1px solid #E5E7EB;
-}
-.d-notes-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #9CA3AF; margin-bottom: 1rem; }
-.d-note-line {
-  font-size: 0.88rem; line-height: 1.8; color: #374151;
-  padding: 0.2rem 0; border-bottom: 1px solid #F3F4F6;
-  animation: fadeIn 0.3s ease;
-}
-.d-note-placeholder { font-size: 0.85rem; color: #D1D5DB; font-style: italic; margin-top: 1rem; }
-
-/* RIGHT — suggestion panel, looks like agenda/checklist */
-.d-suggestions {
-  width: 320px; padding: 1.25rem; overflow-y: auto;
-  background: #FAFAFA;
-}
-.d-suggestions-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #9CA3AF; margin-bottom: 1rem; }
-
-.d-card {
-  background: #FFFFFF; border: 1px solid #E5E7EB;
-  border-radius: 10px; padding: 1rem 1.1rem;
-  margin-bottom: 0.75rem; position: relative;
-  border-left: 3px solid #E5E7EB;
-  animation: slideIn 0.35s ease;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-}
-.d-card.urgent { border-left-color: #059669; }
-.d-card.objection { border-left-color: #D97706; }
-.d-card-label {
-  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
-  text-transform: uppercase; color: #9CA3AF; margin-bottom: 0.5rem;
-}
-.d-card.urgent .d-card-label { color: #059669; }
-.d-card.objection .d-card-label { color: #D97706; }
-.d-card-trigger {
-  font-size: 0.78rem; color: #6B7280; font-style: italic;
-  margin-bottom: 0.6rem; line-height: 1.5;
-}
-.d-card-response {
-  font-size: 0.88rem; line-height: 1.65; color: #1F2937; font-weight: 500;
-}
-.d-card-dismiss {
-  position: absolute; top: 0.6rem; right: 0.75rem;
-  font-size: 0.65rem; color: #D1D5DB; cursor: pointer;
-  background: none; border: none; font-family: 'Inter', sans-serif;
-}
-.d-card-dismiss:hover { color: #9CA3AF; }
-.d-empty { font-size: 0.82rem; color: #D1D5DB; font-style: italic; text-align: center; margin-top: 2rem; line-height: 1.7; }
-
-/* NEW SUGGESTION FLASH — subtle pulse on the right panel title */
-.d-suggestions-title.flash { animation: titleFlash 0.6s ease; }
-@keyframes titleFlash { 0%,100%{color:#9CA3AF} 50%{color:#059669} }
-
 /* SETUP MODAL */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.8);
@@ -315,7 +231,6 @@ body.discreet { background: #F8F9FA; }
   font-size: 0.7rem; padding: 0.35rem 0.75rem; border-radius: 6px;
   pointer-events: none;
 }
-body.discreet .shortcut-hint { background: rgba(0,0,0,0.08); color: #9CA3AF; }
 </style>
 </head>
 <body>
@@ -342,7 +257,13 @@ body.discreet .shortcut-hint { background: rgba(0,0,0,0.08); color: #9CA3AF; }
       <div class="form-group"><label>Audit score (if taken)</label><input id="clientScore" placeholder="e.g. 42" type="number" min="0" max="100" /></div>
     </div>
     <div class="form-group"><label>Pre-call notes</label><input id="preNotes" placeholder="e.g. Very concerned about data security, 6-person firm" /></div>
-    <button class="modal-btn" onclick="startListening()">Start meeting assistant →</button>
+    <div style="background:#FFF4E5; border:1px solid #F0B429; border-radius:8px; padding:0.85rem 1rem; margin:1rem 0; font-size:0.85rem; line-height:1.5;">
+      <label style="display:flex; gap:0.6rem; align-items:flex-start; cursor:pointer;">
+        <input type="checkbox" id="consentCheck" style="margin-top:0.2rem;" onchange="document.getElementById('startConsentBtn').disabled = !this.checked" />
+        <span>I have told the client, in these words or similar, before starting: <em>"I use an AI assistant that listens and suggests talking points for me — is that okay with you?"</em> — and they agreed.</span>
+      </label>
+    </div>
+    <button class="modal-btn" id="startConsentBtn" onclick="startListening()" disabled>Start meeting assistant →</button>
   </div>
 </div>
 
@@ -353,7 +274,6 @@ body.discreet .shortcut-hint { background: rgba(0,0,0,0.08); color: #9CA3AF; }
     <div class="header-right">
       <div class="live-badge off" id="liveBadge"><div class="live-dot"></div><span id="liveText">Not listening</span></div>
       <div class="client-pill" id="clientPill" onclick="document.getElementById('setupModal').style.display='flex'">No client set</div>
-      <button class="icon-btn discreet-trigger" onclick="enterDiscreet()" title="Switch to discreet mode (Ctrl+D)">🎭 Discreet mode</button>
       <button class="start-btn" id="startBtn" onclick="document.getElementById('setupModal').style.display='flex'">Set up meeting</button>
     </div>
   </div>
@@ -383,37 +303,9 @@ body.discreet .shortcut-hint { background: rgba(0,0,0,0.08); color: #9CA3AF; }
     <div class="status-bar">
       <div class="status-dot" id="statusDot"></div>
       <span id="statusText">Ready — set up a meeting to begin</span>
-      <span style="margin-left:auto;opacity:0.5">Press Ctrl+D to toggle discreet mode</span>
     </div>
   </div>
 </div>
-
-<!-- ===== DISCREET MODE ===== -->
-<div id="discreetMode">
-  <div class="d-header">
-    <div>
-      <div class="d-title">Meeting Notes</div>
-      <div class="d-subtitle" id="dClientName">No meeting in progress</div>
-    </div>
-    <button class="d-exit" onclick="exitDiscreet()">← Back to assistant</button>
-  </div>
-  <div class="d-body">
-    <div class="d-notes">
-      <div class="d-notes-title">Notes</div>
-      <div id="dNotesList">
-        <div class="d-note-placeholder">Notes will appear as the conversation progresses...</div>
-      </div>
-    </div>
-    <div class="d-suggestions">
-      <div class="d-suggestions-title" id="dSuggestionsTitle">Talking points</div>
-      <div id="dCardsList">
-        <div class="d-empty">Suggestions will appear here during the meeting.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="shortcut-hint">Ctrl+D — toggle discreet mode</div>
 
 <script>
 const SYSTEM_PROMPT = `You are an AI assistant helping Pooja during a live meeting or call for Procella AI — a company that implements AI workflows for accounting, legal, and medical practices.
@@ -432,18 +324,17 @@ Be selective. Only flag genuine questions, objections, or concerns. Ignore small
 
 About Procella AI:
 - Implements AI workflows for accounting, legal, medical/dental practices
-- 30-day guarantee: measurable results or client pays nothing
+- 30-day guarantee: if the practice doesn't see the measurable time savings agreed on at kickoff, they don't pay for the implementation — full terms defined in writing before work begins
 - We handle 100% of technical implementation — zero client effort needed
 - Integrates with existing tools: QuickBooks, Clio, Dentrix, Google Workspace, M365
 - Pricing: $2,000–$5,000 fixed project or $800–$1,500/month retainer
 - Timeline: 30 days from kickoff to live results
-- Data security: enterprise-grade, HIPAA compliant, attorney-client privilege aware
-- Small number of clients at a time — quality guaranteed`;
+- Data security: we use established, reputable third-party providers; we are not currently HIPAA-certified or independently security-audited — don't claim otherwise
+- Small number of clients at a time`;
 
 let clientContext = {};
 let recognition = null;
 let isActive = false;
-let isDiscreet = false;
 let fullTranscript = [];
 let pendingText = '';
 let analysisTimer = null;
@@ -485,24 +376,6 @@ function stopListening() {
   setBadge(false);
 }
 
-function enterDiscreet() {
-  isDiscreet = true;
-  document.getElementById('normalMode').style.display = 'none';
-  document.getElementById('discreetMode').style.display = 'flex';
-  document.body.classList.add('discreet');
-}
-
-function exitDiscreet() {
-  isDiscreet = false;
-  document.getElementById('normalMode').style.display = 'grid';
-  document.getElementById('discreetMode').style.display = 'none';
-  document.body.classList.remove('discreet');
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.key === 'd') { e.preventDefault(); isDiscreet ? exitDiscreet() : enterDiscreet(); }
-});
-
 function setupRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { setStatus('', 'Use Google Chrome for speech recognition'); return; }
@@ -525,7 +398,6 @@ function startRecognition() {
       const t = e.results[i][0].transcript;
       if (e.results[i].isFinal) {
         addTranscriptLine(t.trim(), 'final');
-        addDiscreetNote(t.trim());
         fullTranscript.push(t.trim());
         wordCount += t.trim().split(' ').length;
         document.getElementById('wordCount').textContent = wordCount + ' words';
@@ -589,7 +461,6 @@ Latest: "${textToAnalyze}"`;
       const parsed = JSON.parse(raw);
       if (parsed.shouldRespond && parsed.response) {
         addSuggestion(parsed.type, parsed.trigger, parsed.response, parsed.urgent);
-        addDiscreetCard(parsed.type, parsed.trigger, parsed.response, parsed.urgent);
         highlightLastTranscript();
       }
     } catch(e) {}
@@ -608,20 +479,6 @@ function addTranscriptLine(text, cls) {
   div.textContent = text;
   s.appendChild(div);
   s.scrollTop = s.scrollHeight;
-}
-
-function addDiscreetNote(text) {
-  if (!text || text.length < 10) return;
-  const list = document.getElementById('dNotesList');
-  const placeholder = list.querySelector('.d-note-placeholder');
-  if (placeholder) placeholder.remove();
-  noteCount++;
-  if (noteCount > 30) { const old = list.querySelector('.d-note-line'); if (old) old.remove(); }
-  const div = document.createElement('div');
-  div.className = 'd-note-line';
-  div.textContent = text.length > 80 ? text.substring(0, 80) + '...' : text;
-  list.appendChild(div);
-  list.parentElement.scrollTop = 9999;
 }
 
 function addSuggestion(type, trigger, response, urgent) {
@@ -643,26 +500,6 @@ function addSuggestion(type, trigger, response, urgent) {
     <div class="card-time">${now}</div>`;
   scroll.appendChild(card);
   scroll.scrollTop = scroll.scrollHeight;
-}
-
-function addDiscreetCard(type, trigger, response, urgent) {
-  const list = document.getElementById('dCardsList');
-  const empty = list.querySelector('.d-empty');
-  if (empty) empty.remove();
-  const id = `dcard-${suggestionCount}`;
-  const labelText = type === 'question' ? 'Client question' : type === 'objection' ? 'Concern raised' : 'Suggestion';
-  const cardClass = 'd-card' + (urgent ? ' urgent' : type === 'objection' ? ' objection' : '');
-  const card = document.createElement('div');
-  card.className = cardClass; card.id = id;
-  card.innerHTML = `
-    <button class="d-card-dismiss" onclick="document.getElementById('${id}').remove()">✕</button>
-    <div class="d-card-label">${labelText}</div>
-    ${trigger ? `<div class="d-card-trigger">"${trigger}"</div>` : ''}
-    <div class="d-card-response">${response.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
-  list.insertBefore(card, list.firstChild);
-  const title = document.getElementById('dSuggestionsTitle');
-  title.classList.add('flash');
-  setTimeout(() => title.classList.remove('flash'), 700);
 }
 
 function highlightLastTranscript() {
